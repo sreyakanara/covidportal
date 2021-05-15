@@ -1,0 +1,98 @@
+{% extends 'beds/index.html' %}
+
+{% block content %}
+<div class="container mt-4 pt-4 pb-4">
+  <div class="card-deck">
+    <div class="card bg-primary">
+      <div class="card-body text-center">
+        <p class="card-text">NORMAL BEDS</p>
+        <h2 class="text-white">{{ normal_beds.total }}</h2>
+      </div>
+    </div>
+    <div class="card bg-warning">
+      <div class="card-body text-center">
+        <p class="card-text">COVID BEDS</p>
+        <h2 class="text-white">{{ covid_beds.total }}</h2>
+      </div>
+    </div>
+    <div class="card bg-success">
+      <div class="card-body text-center">
+        <p class="card-text">ICUs</p>
+        <h2 class="text-white">{{ icu.total }}</h2>
+      </div>
+    </div>
+    <div class="card bg-danger">
+      <div class="card-body text-center">
+        <p class="card-text">VENTILATOR</p>
+        <h2 class="text-white">{{ ventilator.total }}</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-3">
+  <h3 class="mb-3">Hospital Information</h3>
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <br>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>NAME</th>
+        <th>LOCATION</th>
+        <th>DISTRICT</th>
+        <th class="text-center">NORMAL BEDS</th>
+        <th class="text-center">COVID BEDS</th>
+        <th class="text-center">ICU</th>
+        <th class="text-center">VENTILATOR</th>
+      </tr>
+    </thead>
+    <tbody id="myTable">
+      {% for hospital in hospitals %}
+        <tr>
+          <td>{{ hospital.name }}</td>
+          <td>{{ hospital.location}}</td>
+          <td>{{ hospital.get_district_display}}</td>
+          <td class="text-center">{{ hospital.normal_beds}}</td>
+          <td class="text-center">{{ hospital.covid_beds}}</td>
+          <td class="text-center">{{ hospital.icu_beds}}</td>
+          <td class="text-center">{{ hospital.ventilator}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if hospitals.has_other_pages %}
+  <nav aria-label="Pagination">
+    <ul class="pagination justify-content-center">
+      {% if hospitals.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ hospitals.previous_page_number }}">Previous</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">Previous</a></li>
+      {% endif %}
+      {% for i in hospitals.paginator.page_range %}
+        {% if hospitals.number == i %}
+          <li class="page-item active"><a class="page-link" href="#"><span>{{ i }} <span class="sr-only">(current)</span></span></a></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if hospitals.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ hospitals.next_page_number }}">Next</a></li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+  <div style="height:120px;"></div>
+</div>
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+{% endblock %}

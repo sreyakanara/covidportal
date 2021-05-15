@@ -1,0 +1,41 @@
+{% extends 'beds/index.html' %}
+
+{% block content %}
+<div class="container m-4 p-4">
+  <h2 class="text-warning"> Welcome {{  hospital.name }}</h2>
+  <a href="{% url 'bedallocate' %}" class="btn btn-danger pull-right"> Allocate Bed </a>
+
+  <div class="container mt-3">
+    <h3 class="mb-3">Patient Register</h3>
+    {% if bedallocations %}
+    <table class="table table-bordered table-striped table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>NAME</th>
+          <th>LOCATION</th>
+          <th>DISTRICT</th>
+          <th>PHONE</th>
+          <th class="text-center">CATEGORY</th>
+          <th> # </th>
+        </tr>
+      </thead>
+      <tbody id="myTable">
+        {% for bed in bedallocations %}
+          <tr>
+            <td>{{ bed.patient.name }}</td>
+            <td>{{ bed.patient.location}}</td>
+            <td>{{ bed.patient.get_district_display }}</td>
+            <td class="text-center">{{ bed.patient.phone }}</td>
+            <td class="text-center">{{ bed.get_category_display }}</td>
+              <td class="text-center"><a class="btn btn-info" href="{% url 'discharge' bed.id %}">Discharge</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-warning"> No Patient Data Found !</div>
+    {% endif %}
+    <div style="height:120px;"></div>
+  </div>
+</div>
+{% endblock %}
